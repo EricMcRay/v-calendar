@@ -1,5 +1,13 @@
 import defaults from './defaults';
-import { isArray, isObject } from './typeCheckers';
+import {
+  isNumber,
+  isString,
+  isDate,
+  isArray,
+  isObject,
+  isFunction,
+} from './typeCheckers';
+import { parse } from './fecha';
 
 const monthComps = {};
 
@@ -12,6 +20,31 @@ export const todayComps = {
   day: today.getDate(),
 };
 
+export const toDate = d => {
+  if (isDate(d)) return new Date(d.getTime());
+  if (isNumber(d)) return new Date(d);
+  if (isString(d)) return parse(d, ['L', 'YYYY-MM-DD', 'YYYY/MM/DD']);
+  if (isObject(d))
+    return new Date(
+      d.year || today.getFullYear(),
+      d.month || today.getMonth(),
+      d.day || today.getDate(),
+    );
+  return new Date(d);
+};
+
+export const getPageForDate = date => {
+  const d = toDate(date);
+  return (
+    d && {
+      month: d.getMonth() + 1,
+      year: d.getFullYear(),
+    }
+  );
+};
+
+export const evalFn = (fn, args) => (isFunction(fn) ? fn(args) : fn);
+
 export const getMonthDates = (year = 2000) => {
   const dates = [];
   for (let i = 0; i < 12; i++) {
@@ -20,11 +53,16 @@ export const getMonthDates = (year = 2000) => {
   return dates;
 };
 
-export const getWeekdayDates = (firstDayOfWeek = 1, year = 2000) => {
+export const getWeekdayDates = ({
+  firstDayOfWeek = 1,
+  year = 2000,
+  utc = false,
+}) => {
   const dates = [];
   for (let i = 1, j = 0; j < 7; i++) {
-    const d = new Date(Date.UTC(year, 0, i));
-    if (d.getUTCDay() === firstDayOfWeek - 1 || j > 0) {
+    const d = utc ? new Date(Date.UTC(year, 0, i)) : new Date(year, 0, i);
+    const day = utc ? d.getUTCDay() : d.getDay();
+    if (day === firstDayOfWeek - 1 || j > 0) {
       dates.push(d);
       j++;
     }
@@ -172,11 +210,14 @@ export const getLastArrayItem = (array, fallbackValue) => {
 
 export const arrayHasItems = array => isArray(array) && array.length;
 
-export const elementHasAncestor = (el, ancestor) => {
-  if (!el) return false;
-  if (el === ancestor) return true;
-  return elementHasAncestor(el.parentElement, ancestor);
+export const findAncestor = (el, fn) => {
+  if (!el) return null;
+  if (fn(el)) return el;
+  return findAncestor(el.parentElement, fn);
 };
+
+export const elementHasAncestor = (el, ancestor) =>
+  !!findAncestor(el, e => e === ancestor);
 
 export const elementPositionInAncestor = (el, ancestor) => {
   let top = 0;

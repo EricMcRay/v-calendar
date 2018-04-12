@@ -1,10 +1,96 @@
+# v0.9.2
+## Bug Fixes
+### `v-calendar`
+* Fixes bug where detected locale getting overwritten by 'en-US' in some cases. Closes #101.
+
+## Improvements
+### `v-calendar`
+* Adds support for importing individual components along with a method to `setupCalendar`. Closes #60. Closes #105.
+* Includes full `page` object with `update:frompage` and `update:topage` events. Closes #120.
+
+# v0.9.1
+## Bug Fixes
+### `v-calendar`
+* Removes global css
+* Removes 'clever' container size detection
+
+# v0.9.0
+## Bug Fixes
+### `v-calendar`
+* Fixes Turkish locale identifier
+* Fixes weekday formatting by using UNC dates with `Intl.DateTimeFormat`. Closes #104.
+* Other small bug fixes
+
+### `v-date-picker`
+* Fixes glitch with highlight cap animation when `mode === "range"`
+* Fixes bug with `themeStyles.dayContent` style getting ignored. Closes #115.
+
+## Improvements
+### `v-calendar`
+* Adds `min-date` prop as a convenient alternative to `min-page`
+* Adds `max-date` prop as a convenient alternative to `max-page`
+* Adds `is-linked` prop to link panes to consecutive months when `is-double-paned` is set. Closes #80.
+* Adds `is-vertical` prop for vertical calendar orientation when `is-double-paned` is set. Closes #89.
+
+### `v-date-picker`
+* `min-date` and `max-date` props are now forwarded to `v-calendar`. Closes #78.
+
+### Defaults
+Theme styles modifications. Closes #93.
+
+| Style | Modification | Description |
+| ----- | ------------ | ----- |
+| `horizontalDivider` | Add | Horizontal divider when calendars are in vertical orientation (`is-vertical`) |
+| `navHeader` | Add | Navigation pane header. |
+| `navHeaderTitle` | Add | Navigation pane header title. |
+| `navHeaderArrows` | Add | Navigation pane header arrows. |
+| `navMonthCell` | Add | Navigation pane month cells. |
+| `navYearCell` | Add | Navigation pane year cells. |
+| `header` | Edited | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `headerTitle` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `headerArrows` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `headerHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `weekdays` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `weekdaysHorizontalDivider` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| `weeks` | Edit | Supports use of function that accepts a [`page`](https://docs.vcalendar.io/api#page-object) object and return a style |
+| ~~`headerVerticalDivider`~~ | Remove | *Reference note below* |
+| ~~`weekdaysVerticalDivider`~~ | Remove | *Reference note below* |
+| ~~`weeksVerticalDivider`~~ | Remove | *Reference note below* |
+
+* Styles removed in favor of defining functions for the `header`, `weekdays` and `weeks` styles like so...
+
+```html
+<template>
+  <v-calendar :theme-styles='themeStyles'>
+  </v-calendar>
+</template>
+```
+
+```javascript
+export default {
+  data() {
+    return {
+      themeStyles: {
+        // Use page position to set left border for the 2nd pane header
+        // NOTE: You can use the `verticalDivider` style to apply a single border. Just use this technique to apply different border styles for specific sections (header, weekdays, weeks)
+        header({ position }) {
+          return (position === 2) && {
+            borderLeft: '1px solid #dadada'
+          };
+        }
+      }
+    }
+  }
+}
+```
+
 # v0.8.0
 ## Bug Fixes
-`v-date-picker`
+### `v-date-picker`
 * Fixes `select-attribute` and `drag-attribute` props getting written over. Closes #75.
 
 ## Improvements
-`v-calendar`
+### `v-calendar`
 * Attribute types (highlight, bar, dot, contentStyle, popover) can now be defined as functions that accept an object parameter with the following properties and return an object. Closes #81.
 
 | Property Name | Type    | Description |
@@ -20,7 +106,7 @@
 * The `dayContentHover` theme style has been deprecated in favor of using a function to define the `contentStyle`.
 * Support use of a `formats.data` parser to parse attribute dates
 
-`v-date-picker`
+### `v-date-picker`
 * Add `popoverShowClearMargin` prop to apply clear margin when popover appears. Closes #47.
 * Add events for `popover-will-appear`, `popover-did-appear`, `popover-will-disappear` and `popover-did-disappear`
 * `show-popover` prop renamed to `show-day-popover` to avoid confusion with input popover
