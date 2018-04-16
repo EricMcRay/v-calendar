@@ -1,3 +1,81 @@
+# v0.9.5
+## Improvements
+### `v-calendar`
+* Adds support for 'day-content' slots. :tada: :tada: :tada: This adds a lot of flexibility by allowing you to provide your own day cells. The layout has also been improved to grow with your cells, so you can now build larger calendars to fill with your own content.
+
+```html
+<v-calendar>
+  <div
+    slot='day-content'
+    slot-scope='{ day, attributes, contentStyle }'
+    class='my-day'>
+    <!-- Be sure to display the day of the month somewhere in your content -->
+    {{ day.day }}
+  </div>
+</v-calendar>
+```
+```css
+/* Set width and height and `v-calendar` will resize appropriately */
+.my-day {
+  width: 40px;
+  height: 40px;
+}
+/* You can also apply your own hover styles */
+.my-day:hover {
+  background-color: #dadada;
+}
+```
+
+You can get access to the following slot props:
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| [`day`](https://docs.vcalendar.io/api#day-object) | Object | Object with various day info. Use the `day.day` number prop to display the day of month in your slot content. |
+| `attibutes` | Array | List of attributes for this day. |
+| `contentStyle` | Object | Content style to apply if you wish, derived from `themeStyles.dayContent` and other attributes. |
+
+# v0.9.4
+## Bug Fixes
+### `v-date-picker`
+* Fix bug where 'Do' format token was not supported. Closes #127.
+
+# v0.9.3
+## Bug Fixes
+### `v-calendar`
+* Fix bug where initial `update:frompage` and `update:topage` events missing page argument. Closes #125.
+
+### `v-date-picker`
+* Fix bug where `formats` prop not getting forwarded to `v-calendar`. Closes #123.
+
+### `popover`
+* Modify `tabindex` to improve tab navigation. Closes #119.
+* Fix bug where content container element was overflowing window on mobile.
+
+## Improvements
+### `v-date-picker`
+* Improve input key handing, specifically for `enter` and `esc` keys
+* Added `update-on-input-keyup` prop to update picker selection on every `keyup` event.
+* Custom slot method `updateValue` can now accept options as the second parameter. Closes #118.
+
+| Property | Description | Default Value |
+| -------- | ----------- | ------------- |
+| `formatInput` | If new value is valid, date picker should reformat the `inputValue` (based on `formats.input`). | `true` |
+| `hidePopover` | If new valud is valid, date picker should hide popover. | `!popoverKeepVisibleOnInput` |
+
+```html
+<v-date-picker
+  v-model='date'>
+  <input
+    slot-scope='{ inputValue, updateValue }'
+    :value='inputValue'
+    @change='updateValue(inputValue, { formatInput: true, hidePopover: false })'
+    @keyup='updateValue(inputValue, { formatInput: false, hidePopover: false })' />
+</v-date-picker>
+```
+
+### `defaults`
+* Added `datePickerUpdateOnKeyup` as default value for `v-date-picker.update-on-keyup` prop.
+
 # v0.9.2
 ## Bug Fixes
 ### `v-calendar`

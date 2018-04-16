@@ -41,6 +41,7 @@ const defaults = {
       placeholder: `${format} - ${format}`,
     }),
   }),
+  datePickerUpdateOnInputKeyup: false,
   datePickerTintColor: '#66B3CC',
   datePickerShowCaps: false,
   datePickerShowDayPopover: true,
@@ -69,14 +70,14 @@ const defaults = {
   maxTapDuration: 200, // ms
   highlight: {
     animated: true,
-    height: '1.9rem',
+    height: '1.8rem',
     borderWidth: '0',
     borderStyle: 'solid',
     opacity: 1,
   },
   highlightCaps: {
     animated: true,
-    height: '1.9rem',
+    height: '1.8rem',
     borderWidth: '0',
     borderStyle: 'solid',
     opacity: 1,
